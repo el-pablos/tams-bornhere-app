@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tams — BornHere App | The world the moment you arrived</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#1a1814">
+<meta name="description" content="Discover the world on the day you were born: the moon, weather, chart-topping song and more. Local & private — no data leaves your device.">
+<meta property="og:site_name" content="Tams - BornHere App">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The world the moment you arrived">
+<meta property="og:description" content="One date. One place. The beginning of your story. 100% local, no tracking, no data leakage.">
+<link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Tams - BornHere App","url":"http://localhost/"}</script>
+</head>
+<body>
+
+<!-- ===== BACKGROUND LAYERS ===== -->
+<canvas class="bg-stars" id="starCanvas"></canvas>
+<div class="bg-vignette"></div>
+<div class="bg-grain"></div>
+
+<!-- ===== HOME PAGE (default view) ===== -->
+<div id="homePage" class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="#" class="logo" onclick="goHome();return false;">Tams<span class="gold">·BornHere</span></a>
+      <div class="header-right">
+        <label class="lang-select">
+          <span>🌐 EN</span>
+          <select onchange="this.previousElementSibling.textContent='🌐 '+this.value">
+            <option>EN</option><option>ES</option><option>PT</option><option>FR</option>
+            <option>DE</option><option>IT</option><option>NL</option><option>PL</option>
+            <option>RU</option><option>TR</option><option>AR</option><option>HI</option>
+            <option>JA</option><option>ZH</option>
+          </select>
+        </label>
+        <a href="#" class="btn-gift" onclick="showGift();return false;">Give a gift</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-eyebrow">✦ &nbsp;A small act of time travel</p>
+    <h1>What was the world like<br><span class="italic-gold">the day you were born?</span></h1>
+    <p class="counter"><span class="num" id="counterNum">1,583,097</span> birthdays rebuilt — and counting</p>
+    <p style="font-family:var(--font-mono);font-size:0.75rem;color:var(--ink-soft);margin-top:0.25rem"><span id="todayDate"></span></p>
+  </section>
+
+  <!-- Main content: Form + Certificate preview -->
+  <div class="main-content">
+
+    <!-- Form -->
+    <div class="form-card">
+      <div class="form-group">
+        <span class="form-label">Your first name</span>
+        <input type="text" class="form-input" id="inputName" placeholder="Your name" oninput="updateCertPreview()">
+      </div>
+
+      <div class="form-group">
+        <span class="form-label">Your birthday</span>
+        <input type="date" class="form-input" id="inputDate" min="1900-01-01" max="2025-12-31" onchange="updateCertPreview()">
+      </div>
+
+      <div class="form-group">
+        <span class="form-label">Your birthplace</span>
+        <input type="text" class="form-input" id="inputCity" placeholder="City, Country" oninput="updateCertPreview()" list="cityList">
+        <datalist id="cityList">
+          <option value="New York, USA"><option value="London, UK"><option value="Tokyo, Japan">
+          <option value="Jakarta, Indonesia"><option value="Paris, France"><option value="Berlin, Germany">
+          <option value="Houston, USA"><option value="Sydney, Australia"><option value="Mumbai, India">
+          <option value="São Paulo, Brazil"><option value="Cairo, Egypt"><option value="Seoul, South Korea">
+        </datalist>
+      </div>
+
+      <button class="birth-time-toggle" onclick="toggleBirthTime()">
+        <span id="btToggleText">+ Add birth time</span>
+      </button>
+      <div class="birth-time-fields" id="birthTimeFields">
+        <select class="form-input" id="btHour"><option value="">Hour</option></select>
+        <select class="form-input" id="btMin"><option value="">Min</option></select>
+        <select class="form-input" id="btAmPm"><option value="">AM/PM</option><option>AM</option><option>PM</option></select>
+      </div>
+
+      <div style="margin-top:1.5rem">
+        <button class="btn-primary" onclick="startStory()">
+          <span>Discover my day</span>
+          <span style="font-size:1.1em">→</span>
+        </button>
+        <button class="btn-secondary" onclick="alert('Gift feature: Coming soon in Tams - BornHere App')">It's a gift for someone else</button>
+      </div>
+
+      <p class="form-disclaimer">
+        Free to start. No account or card needed.<br>
+        🔒 We never sell your data. Everything runs locally.<br>
+        Explore more with chapters, a printable certificate, or a personalized film.
+      </p>
+    </div>
+
+    <!-- Certificate Preview -->
+    <div class="cert-preview" id="certPreview">
+      <div class="cert-eyebrow">★ &nbsp;A Certificate of Arrival &nbsp;★</div>
+      <div class="cert-name cert-placeholder" id="certName">your name</div>
+      <div class="cert-row">
+        <div class="cert-label">Born on</div>
+        <span class="cert-value cert-placeholder" id="certDate">a day, soon to be chosen</span>
+      </div>
+      <div class="cert-row">
+        <div class="cert-label">In the city of</div>
+        <span class="cert-value cert-placeholder" id="certCity">where the world first met you</span>
+      </div>
+      <div class="cert-row">
+        <div class="cert-label">The moon overhead</div>
+        <span class="cert-value cert-placeholder" id="certMoon">waiting on a date</span>
+      </div>
+      <div class="cert-seal">★</div>
+      <span class="cert-placeholder" style="font-size:0.8125rem" id="certHint">Fill in a few things and watch this take shape.</span>
+      <div class="cert-brand">tams · bornhere</div>
+    </div>
+
+    <!-- Feature text -->
+    <p style="text-align:center;margin:2rem auto;max-width:28rem;font-size:0.9375rem;color:var(--ink-soft)">
+      The weather, the headlines, the #1 song —<br>
+      <span style="color:var(--foreground)">reconstructed from real archives</span>
+    </p>
+
+    <!-- Explore section -->
+    <div class="explore-section">
+      <h2 class="explore-title">Curious? Explore a day first.</h2>
+      <p class="hero-eyebrow" style="margin-top:0.5rem">Three days to discover</p>
+      <div class="explore-grid">
+        <a class="explore-card" onclick="exploreDay(1969,7,20,'Houston, USA');return false;" href="#">
+          <span class="explore-num">01</span>
+          <span class="explore-card-title">Apollo 11 lands on the Moon</span>
+          <span class="explore-card-meta">Houston, USA · 1969-07-20</span>
+          <span class="explore-card-visit">Visit →</span>
+        </a>
+        <a class="explore-card" onclick="exploreDay(1989,11,9,'Berlin, Germany');return false;" href="#">
+          <span class="explore-num">02</span>
+          <span class="explore-card-title">The Wall falls</span>
+          <span class="explore-card-meta">Berlin, DE · 1989-11-09</span>
+          <span class="explore-card-visit">Visit →</span>
+        </a>
+        <a class="explore-card" onclick="exploreDay(2000,1,1,'New York, USA');return false;" href="#">
+          <span class="explore-num">03</span>
+          <span class="explore-card-title">The new millennium</span>
+          <span class="explore-card-meta">New York, USA · 2000-01-01</span>
+          <span class="explore-card-visit">Visit →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#" class="active" onclick="goHome();return false;">Tams·BornHere</a>
+      <a href="#" onclick="return false">Gift</a>
+      <a href="#" onclick="return false">Pricing</a>
+      <a href="#" onclick="return false">Refunds</a>
+      <a href="#" onclick="return false">Privacy</a>
+      <a href="#" onclick="return false">Terms</a>
+      <a href="#" onclick="return false">Contact</a>
+    </div>
+    <p class="footer-tagline">Made for the day you arrived · 100% local & private</p>
+  </footer>
+</div>
+
+<!-- ===== STORY PAGE (hidden by default) ===== -->
+<div id="storyPage" class="page" style="display:none">
+  <header class="header story-header">
+    <div class="header-inner">
+      <a href="#" class="logo" onclick="goHome();return false;">Tams<span class="gold">·BornHere</span></a>
+      <div class="header-right">
+        <label class="lang-select"><span>🌐 EN</span><select><option>EN</option></select></label>
+        <a href="#" class="btn-gift" onclick="showGift();return false;">Give a gift</a>
+      </div>
+    </div>
+    <div class="story-datestamp" id="storyDatestamp"></div>
+    <p class="story-subtitle" id="storySubtitle">Let's bring your day back.</p>
+    <div class="progress-dots" id="progressDots"></div>
+  </header>
+
+  <div class="story-scene" id="storyScene">
+    <div class="story-section" id="storyContent">
+      <!-- Dynamic content injected here -->
+    </div>
+  </div>
+</div>
+
+<!-- Floating support button -->
+<button class="support-btn" onclick="alert('Tams - BornHere App\\n\\nThis app runs entirely on your device.\\nNo tracking, no servers, no data collection.')">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#15110d" stroke-width="2">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+  <span class="dot"></span>
+</button>
+
+<script src="data.js"></script>
+<script>
+// ===== STATE =====
+let storyStep = 0;
+let storyData = null;
+let formData = { name: '', year: 0, month: 0, day: 0, city: '', birthTime: null };
+const TOTAL_STEPS = 10;
+
+// ===== STARFIELD CANVAS =====
+const canvas = document.getElementById('starCanvas');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function initStars() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  stars = [];
+  const count = Math.floor((canvas.width * canvas.height) / 4000);
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.2,
+      o: Math.random() * 0.8 + 0.2,
+      tw: Math.random() * 0.02 + 0.005,
+      twDir: 1
+    });
+  }
+}
+
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const s of stars) {
+    s.o += s.tw * s.twDir;
+    if (s.o > 1 || s.o < 0.15) s.twDir *= -1;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 245, 220, ${s.o})`;
+    ctx.fill();
+  }
+  requestAnimationFrame(drawStars);
+}
+
+initStars();
+drawStars();
+window.addEventListener('resize', initStars);
+
+// ===== TODAY DATE =====
+const today = new Date();
+document.getElementById('todayDate').textContent =
+  today.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }).replace(/\//g, ' / ');
+
+// ===== BIRTH TIME POPULATION =====
+const btHour = document.getElementById('btHour');
+const btMin = document.getElementById('btMin');
+for (let h = 1; h <= 12; h++) btHour.innerHTML += `<option>${h}</option>`;
+for (let m = 0; m <= 59; m++) btMin.innerHTML += `<option>${String(m).padStart(2,'0')}</option>`;
+
+function toggleBirthTime() {
+  const fields = document.getElementById('birthTimeFields');
+  const text = document.getElementById('btToggleText');
+  fields.classList.toggle('show');
+  text.textContent = fields.classList.contains('show') ? '− Birth time · Optional' : '+ Add birth time';
+}
+
+// ===== CERTIFICATE PREVIEW LIVE UPDATE =====
+function updateCertPreview() {
+  const name = document.getElementById('inputName').value.trim();
+  const dateVal = document.getElementById('inputDate').value;
+  const city = document.getElementById('inputCity').value.trim();
+
+  const certName = document.getElementById('certName');
+  const certDate = document.getElementById('certDate');
+  const certCity = document.getElementById('certCity');
+  const certMoon = document.getElementById('certMoon');
+  const certHint = document.getElementById('certHint');
+
+  if (name) { certName.textContent = name; certName.classList.remove('cert-placeholder'); }
+  else { certName.textContent = 'your name'; certName.classList.add('cert-placeholder'); }
+
+  if (dateVal) {
+    const d = new Date(dateVal + 'T00:00:00');
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    certDate.textContent = `${monthNames[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+    certDate.classList.remove('cert-placeholder');
+    // Update moon
+    const moon = getMoonPhase(d);
+    certMoon.textContent = `${moon.name} · ${moon.illum}% illuminated`;
+    certMoon.classList.remove('cert-placeholder');
+  } else {
+    certDate.textContent = 'a day, soon to be chosen';
+    certDate.classList.add('cert-placeholder');
+    certMoon.textContent = 'waiting on a date';
+    certMoon.classList.add('cert-placeholder');
+  }
+
+  if (city) { certCity.textContent = city; certCity.classList.remove('cert-placeholder'); }
+  else { certCity.textContent = 'where the world first met you'; certCity.classList.add('cert-placeholder'); }
+
+  if (name || dateVal || city) certHint.textContent = 'Looking good. Keep going.';
+  else certHint.textContent = 'Fill in a few things and watch this take shape.';
+}
+
+// ===== START STORY =====
+function startStory() {
+  const name = document.getElementById('inputName').value.trim();
+  const dateVal = document.getElementById('inputDate').value;
+  const city = document.getElementById('inputCity').value.trim();
+
+  if (!dateVal) {
+    alert('Please enter your birthday to continue.');
+    document.getElementById('inputDate').focus();
+    return;
+  }
+
+  const d = new Date(dateVal + 'T00:00:00');
+  formData.name = name;
+  formData.year = d.getFullYear();
+  formData.month = d.getMonth() + 1;
+  formData.day = d.getDate();
+  formData.city = city;
+
+  // Get birth time if set
+  const btH = document.getElementById('btHour').value;
+  const btM = document.getElementById('btMin').value;
+  const btAP = document.getElementById('btAmPm').value;
+  if (btH && btM && btAP) {
+    let hour = parseInt(btH);
+    if (btAP === 'PM' && hour !== 12) hour += 12;
+    if (btAP === 'AM' && hour === 12) hour = 0;
+    formData.birthTime = `${String(hour).padStart(2,'0')}:${btM}`;
+  }
+
+  // Build story data
+  storyData = buildStoryData(formData.name, formData.year, formData.month, formData.day, formData.city, formData.birthTime);
+  storyStep = 0;
+
+  // Switch to story page
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('storyPage').style.display = 'block';
+  window.scrollTo(0, 0);
+
+  // Update story header
+  updateStoryHeader();
+  renderStep();
+}
+
+// ===== EXPLORE DAY =====
+function exploreDay(year, month, day, city) {
+  formData.name = 'Explorer';
+  formData.year = year;
+  formData.month = month;
+  formData.day = day;
+  formData.city = city;
+  formData.birthTime = null;
+
+  storyData = buildStoryData('Explorer', year, month, day, city, null);
+  storyStep = 1; // Skip the "whose day" step for explore
+
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('storyPage').style.display = 'block';
+  window.scrollTo(0, 0);
+  updateStoryHeader();
+  renderStep();
+}
+
+// ===== STORY HEADER =====
+function updateStoryHeader() {
+  const ds = document.getElementById('storyDatestamp');
+  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  ds.textContent = `${storyData.dayOfWeek}, ${monthNames[formData.month-1]} ${formData.day}, ${formData.year} · ${formData.city.toUpperCase()}`;
+
+  // Progress dots
+  const dotsContainer = document.getElementById('progressDots');
+  dotsContainer.innerHTML = '';
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'progress-dot';
+    if (i < storyStep) dot.classList.add('done');
+    if (i === storyStep) dot.classList.add('active');
+    dotsContainer.appendChild(dot);
+  }
+}
+
+// ===== RENDER STORY STEP =====
+function renderStep() {
+  const content = document.getElementById('storyContent');
+  content.innerHTML = '';
+  content.classList.add('fade-enter');
+
+  updateStoryHeader();
+
+  const d = storyData;
+  let html = '';
+
+  switch(storyStep) {
+    case 0: // Whose day?
+      html = `
+        <button class="nav-back" onclick="goHome()">‹ Back</button>
+        <h2 class="story-h2">Whose day are we bringing back?</h2>
+        <div class="choices">
+          <button class="choice-btn" onclick="nextStep()">
+            <span>My own</span><span class="arrow">→</span>
+          </button>
+          <button class="choice-btn" onclick="nextStep()">
+            <span>Someone I love</span><span class="arrow">→</span>
+          </button>
+        </div>`;
+      break;
+
+    case 1: // Day basics
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">First, a little of your day.</h2>
+        <p class="story-body">All true, worked out from the date alone. The rest is waiting.</p>
+        <div class="data-grid">
+          <div class="data-card">
+            <div class="data-card-label">The day of the week</div>
+            <div class="data-card-value">${d.dayOfWeek}</div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-label">Days on Earth so far</div>
+            <div class="data-card-value">${d.daysOnEarth.toLocaleString()}</div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-label">Full moons since</div>
+            <div class="data-card-value">${d.fullMoons}</div>
+          </div>
+        </div>
+        <button class="nav-next" onclick="nextStep()">Next →</button>`;
+      break;
+
+    case 2: // Childhood city
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">Where did you spend your childhood?</h2>
+        <p class="story-body">This sets the weather, the sky, and the local colour of your day.</p>
+        <div style="max-width:24rem;margin:1.5rem auto 0">
+          <input type="text" class="form-input" id="childhoodCity" placeholder="City, Country" value="${formData.city}" list="cityList">
+        </div>
+        <button class="nav-next" onclick="saveChildhoodCity()">Next →</button>`;
+      break;
+
+    case 3: // Revisit age
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">If you could revisit one age, which would it be?</h2>
+        <p class="story-body">Let's bring a little piece of that year back.</p>
+        <div style="max-width:24rem;margin:1.5rem auto 0">
+          <input type="number" class="form-input" id="revisitAge" placeholder="e.g. 7" min="1" max="100">
+        </div>
+        <button class="nav-next" onclick="nextStep()">Next →</button>`;
+      break;
+
+    case 4: // Year unlocked
+      const revisitYear = d.year + 7; // Default to age 7
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">Let's bring a little piece of that year back.</h2>
+        <p class="story-body">✦ New chapter unlocked: A year worth remembering.</p>
+        <div class="data-grid" style="grid-template-columns:1fr">
+          <div class="data-card">
+            <div class="data-card-label">The year we're revisiting</div>
+            <div class="data-card-value">${revisitYear}</div>
+            <div class="data-card-sub">A snapshot of the world that year</div>
+          </div>
+        </div>
+        <button class="nav-next" onclick="nextStep()">Next →</button>`;
+      break;
+
+    case 5: // What to rediscover
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">What would you love to rediscover first?</h2>
+        <p class="story-body">You'll get the whole story. This just decides where we begin.</p>
+        <div class="choices">
+          <button class="choice-btn" onclick="nextStep()"><span>🌙 The moon & the sky</span><span class="arrow">→</span></button>
+          <button class="choice-btn" onclick="nextStep()"><span>🌤️ The weather that day</span><span class="arrow">→</span></button>
+          <button class="choice-btn" onclick="nextStep()"><span>🎵 The #1 song</span><span class="arrow">→</span></button>
+          <button class="choice-btn" onclick="nextStep()"><span>💲 What things cost</span><span class="arrow">→</span></button>
+        </div>`;
+      break;
+
+    case 6: // Shopping basket / prices
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">Imagine shopping in the year you were born.</h2>
+        <p class="story-body">What three things would you put in your basket?<br>Your basket · ${d.year} · US prices · then and now</p>
+        <div class="price-list">
+          ${d.prices.map(p => `
+            <div class="price-row">
+              <span class="price-item">${p.name}</span>
+              <div style="text-align:right">
+                <div class="price-then">$${formatPrice(p.then)}</div>
+                <div class="price-now">now $${formatPrice(p.now)}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <button class="nav-next" onclick="nextStep()">Next →</button>`;
+      break;
+
+    case 7: // Birth time
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">Do you know what time you were born?</h2>
+        <p class="story-body">Optional. It sets the sky and the weather to that hour.</p>
+        <div style="max-width:20rem;margin:1.5rem auto 0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">
+          <select class="form-input"><option>Hr</option>${Array.from({length:12},(_,i)=>`<option>${i+1}</option>`).join('')}</select>
+          <select class="form-input"><option>Min</option>${Array.from({length:60},(_,i)=>`<option>${String(i).padStart(2,'0')}</option>`).join('')}</select>
+          <select class="form-input"><option>AM/PM</option><option>AM</option><option>PM</option></select>
+        </div>
+        <button class="nav-next" onclick="nextStep()" style="margin-top:1rem">Skip →</button>`;
+      break;
+
+    case 8: // Name
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">What should we call you?</h2>
+        <p class="story-body">See your name become part of your time capsule.<br><span style="color:var(--gold);font-family:var(--font-mono);font-size:0.75rem">${d.dateStr} · ${formData.city}</span></p>
+        <div style="max-width:24rem;margin:1.5rem auto 0">
+          <input type="text" class="form-input" id="storyName" placeholder="Your name" value="${formData.name}">
+        </div>
+        <button class="nav-next" onclick="saveStoryName()">Next →</button>`;
+      break;
+
+    case 9: // Final — certificate reveal
+      html = `
+        <button class="nav-back" onclick="prevStep()">‹ Back</button>
+        <h2 class="story-h2">Your day, brought back to life.</h2>
+        <p class="story-body">Here's everything we found — all reconstructed locally, nothing sent anywhere.</p>
+
+        <!-- Certificate -->
+        <div class="cert-preview" style="border:1px solid var(--border);border-radius:var(--radius);background:rgba(29,23,19,0.6);margin-top:1.5rem">
+          <div class="cert-eyebrow">★ &nbsp;A Certificate of Arrival &nbsp;★</div>
+          <div class="cert-name" style="color:var(--foreground)">${d.name}</div>
+          <div class="cert-row"><div class="cert-label">Born on</div><span class="cert-value">${d.dateStr}</span></div>
+          <div class="cert-row"><div class="cert-label">In the city of</div><span class="cert-value">${d.city}</span></div>
+          <div class="cert-row"><div class="cert-label">The moon overhead</div><span class="cert-value">${d.moon.name} · ${d.moon.illum}% illuminated ${d.moon.emoji}</span></div>
+          <div class="cert-seal">★</div>
+          <div class="cert-brand">tams · bornhere</div>
+        </div>
+
+        <!-- Moon -->
+        <div class="moon-display">
+          <div style="font-size:4rem">${d.moon.emoji}</div>
+          <div class="moon-label">${d.moon.name}</div>
+          <div class="data-card-sub">${d.moon.illum}% illuminated · ${d.dateStr}</div>
+        </div>
+
+        <!-- Weather -->
+        <div class="weather-card">
+          <div class="weather-temp">${d.weather.temp}°</div>
+          <div class="weather-info">
+            <div class="weather-condition">${d.weather.condition}</div>
+            <div class="weather-city">High ${d.weather.high}° / Low ${d.weather.low}° · ${d.weather.city}</div>
+          </div>
+        </div>
+
+        <!-- #1 Song -->
+        <div class="song-card">
+          <div class="cert-eyebrow" style="margin-bottom:0.5rem">🎵 &nbsp;The #1 Song &nbsp;🎵</div>
+          <div class="song-title">${d.song.title}</div>
+          <div class="song-artist">${d.song.artist}</div>
+        </div>
+
+        <!-- Zodiac & Astrology -->
+        <div class="zodiac-grid">
+          <div class="zodiac-card">
+            <div class="zodiac-symbol">${d.zodiac.symbol}</div>
+            <div class="zodiac-label">Zodiac Sign</div>
+            <div class="zodiac-value">${d.zodiac.sign}</div>
+          </div>
+          <div class="zodiac-card">
+            <div class="zodiac-symbol">${d.chinese.symbol}</div>
+            <div class="zodiac-label">Chinese Zodiac</div>
+            <div class="zodiac-value">${d.chinese.animal}</div>
+          </div>
+          <div class="zodiac-card">
+            <div class="zodiac-symbol">💎</div>
+            <div class="zodiac-label">Birthstone</div>
+            <div class="zodiac-value">${d.birthstone}</div>
+          </div>
+          <div class="zodiac-card">
+            <div class="zodiac-symbol">🌸</div>
+            <div class="zodiac-label">Birth Flower</div>
+            <div class="zodiac-value">${d.birthFlower}</div>
+          </div>
+        </div>
+
+        <!-- Headlines -->
+        <div style="margin:1.5rem 0;text-align:center">
+          <div class="cert-eyebrow" style="margin-bottom:0.75rem">📰 &nbsp;The Headlines &nbsp;·&nbsp; ${d.year}</div>
+          ${d.headlines.map(h => `<p style="font-family:var(--font-serif);font-size:1.125rem;color:var(--foreground);margin:0.5rem 0">${h}</p>`).join('')}
+        </div>
+
+        <!-- Prices -->
+        <div style="margin:1.5rem 0">
+          <div class="cert-eyebrow" style="text-align:center;margin-bottom:0.75rem">💲 &nbsp;Prices Then & Now &nbsp;·&nbsp; ${d.year}</div>
+          <div class="price-list">
+            ${d.prices.map(p => `
+              <div class="price-row">
+                <span class="price-item">${p.name}</span>
+                <div style="text-align:right">
+                  <div class="price-then">$${formatPrice(p.then)}</div>
+                  <div class="price-now">now $${formatPrice(p.now)}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+
+        <!-- Earth -->
+        <div style="text-align:center;margin:1.5rem 0">
+          <div class="cert-eyebrow" style="margin-bottom:0.75rem">🌍 &nbsp;The Earth Below &nbsp;·&nbsp; NASA Blue Marble</div>
+          <img class="earth-img" src="assets/earth-day-1024.webp" alt="Earth as seen from space" onerror="this.style.display='none'">
+        </div>
+
+        <!-- CTA -->
+        <div style="text-align:center;margin:2rem 0">
+          <button class="btn-primary" style="max-width:20rem;margin:0 auto" onclick="goHome()">
+            <span>Start another day</span><span>→</span>
+          </button>
+          <p class="form-disclaimer" style="margin-top:1rem">
+            🔒 100% local. No data was sent to any server.<br>
+            Tams - BornHere App · 100% lokal, tanpa server, tanpa tracking.
+          </p>
+        </div>`;
+      break;
+  }
+
+  content.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+// ===== NAVIGATION =====
+function nextStep() {
+  if (storyStep < TOTAL_STEPS - 1) {
+    storyStep++;
+    renderStep();
+  }
+}
+
+function prevStep() {
+  if (storyStep > 0) {
+    storyStep--;
+    renderStep();
+  }
+}
+
+function saveChildhoodCity() {
+  const val = document.getElementById('childhoodCity')?.value.trim();
+  if (val) formData.city = val;
+  storyData = buildStoryData(formData.name || 'Friend', formData.year, formData.month, formData.day, formData.city, formData.birthTime);
+  nextStep();
+}
+
+function saveStoryName() {
+  const val = document.getElementById('storyName')?.value.trim();
+  if (val) {
+    formData.name = val;
+    storyData = buildStoryData(formData.name, formData.year, formData.month, formData.day, formData.city, formData.birthTime);
+  }
+  nextStep();
+}
+
+function goHome() {
+  document.getElementById('homePage').style.display = 'block';
+  document.getElementById('storyPage').style.display = 'none';
+  storyStep = 0;
+  window.scrollTo(0, 0);
+}
+
+function showGift() {
+  alert('🎁 Gift Feature\\n\\nIn Tams - BornHere App, gifts are created locally and shared as printable certificates.\\nNo accounts, no servers, no data collection.');
+}
+
+// ===== COUNTER ANIMATION =====
+function animateCounter() {
+  const el = document.getElementById('counterNum');
+  let current = 1580000;
+  const target = 1583097;
+  const interval = setInterval(() => {
+    current += Math.ceil((target - current) / 10);
+    if (current >= target) { current = target; clearInterval(interval); }
+    el.textContent = current.toLocaleString('en-US');
+  }, 50);
+}
+
+animateCounter();
+</script>
+</body>
+</html>
