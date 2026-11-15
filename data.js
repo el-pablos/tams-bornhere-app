@@ -138,7 +138,10 @@ function priceThenNow(year) {
 }
 
 function formatPrice(v) {
-  if (v >= 1000000) return (v / 1000000).toFixed(1) + "jt";
+  if (v >= 1000000) {
+    const jt = v / 1000000;
+    return (jt % 1 === 0 ? jt.toFixed(0) : jt.toFixed(1)) + "jt";
+  }
   if (v >= 1000) return Math.round(v / 1000) + "rb";
   return Math.round(v).toString();
 }
