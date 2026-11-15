@@ -10,10 +10,13 @@ Aplikasi web yang merekonstruksi dunia di hari kamu lahir — fase bulan, zodiak
 ![HTML5](https://img.shields.io/badge/HTML5-semantic-orange?logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-custom-blue?logo=css3&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-server-green?logo=node.js&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-deployed-black?logo=vercel)
 ![Privacy](https://img.shields.io/badge/Privacy-100%25%20local-success)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-**Repo stats:** 8 commits · 6 source files · 52 unit tests · 12 screenshots · 0 external API calls
+**🌐 Live demo:** https://tams-bornhere-app.vercel.app
+
+**Repo stats:** 13 commits · 8 source files · 52 unit tests · 12 screenshots · 0 external API calls · Vercel auto-deploy
 
 </div>
 
@@ -343,6 +346,19 @@ Output:
   Total: 52 | Passed: 52 | Failed: 0
   Status: ✅ ALL PASSED
 ```
+
+### Deploy ke Vercel (auto-deploy dari GitHub)
+
+Repo ini udah terhubung ke Vercel — tiap push ke `main` auto-deploy ke production:
+
+```
+git push origin main
+→ Vercel detect push
+→ Build & deploy otomatis
+→ Production URL auto-update
+```
+
+Live URL: https://tams-bornhere-app.vercel.app
 
 ### Tanpa Server (Direct Open)
 
