@@ -1,0 +1,13 @@
+{
+  "name": "tams-bornhere-app",
+  "version": "1.0.0",
+  "description": "Aplikasi web lokal yang merekonstruksi dunia di hari kamu lahir",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "keywords": ["astrology","birthday","certificate","zodiac","moon-phase","local-first","privacy"],
+  "author": "el-pablos",
+  "license": "MIT"
+}
