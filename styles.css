@@ -1024,3 +1024,445 @@ body {
 .form-note .highlight {
   color: var(--foreground);
 }
+
+/* ===== CAPSULE SECTIONS (step 9) ===== */
+.capsule-section {
+  margin: 3.5rem 0;
+  padding: 0 0.25rem;
+}
+.capsule-section:first-of-type { margin-top: 1.5rem; }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.section-headline {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 5.5vw, 2.2rem);
+  line-height: 1.18;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--foreground);
+  text-shadow: 0 2px 24px rgba(0,0,0,0.7);
+  max-width: 30rem;
+  margin: 0 auto;
+}
+
+.section-headline .num-gold {
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.section-footnote {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  text-align: center;
+  margin-top: 1.25rem;
+  opacity: 0.75;
+}
+
+/* ===== LIFE IN NUMBERS ===== */
+.life-numbers {
+  display: grid;
+  gap: 0.875rem;
+  margin-top: 1.75rem;
+}
+@media (min-width: 640px) {
+  .life-numbers { grid-template-columns: repeat(3, 1fr); }
+}
+
+.stat-card {
+  position: relative;
+  padding: 1.5rem 1.25rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: rgba(29,23,19,0.55);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.3s, transform 0.3s;
+}
+.stat-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.14); }
+
+/* Highlighted heartbeats card — gold outline per original design */
+.stat-card.highlight {
+  border-color: rgba(227,173,75,0.45);
+  background: linear-gradient(180deg, rgba(227,173,75,0.07), rgba(29,23,19,0.55));
+}
+.stat-card.highlight:hover { border-color: var(--gold); }
+
+.stat-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 2rem;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--ink-soft);
+  line-height: 1.35;
+  max-width: 9rem;
+}
+
+.stat-icon {
+  font-size: 1rem;
+  color: var(--gold);
+  opacity: 0.85;
+  line-height: 1;
+}
+
+.stat-value {
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 6vw, 2.4rem);
+  font-weight: 500;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.75rem;
+  line-height: 1;
+}
+
+.heartbeats-count {
+  font-size: clamp(1.4rem, 4.5vw, 1.75rem);
+  letter-spacing: -0.01em;
+}
+
+.stat-caption {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin-top: 0.5rem;
+}
+
+.age-counter {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  margin-top: 1.25rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: rgba(29,23,19,0.4);
+  max-width: 18rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== WEATHER (blue card) ===== */
+.weather-card-blue {
+  margin-top: 1.75rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(80,130,200,0.25);
+  background: linear-gradient(155deg, #16314f 0%, #1d3f6b 45%, #244d80 100%);
+  box-shadow: 0 8px 40px rgba(20,50,90,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+  padding: 1.75rem 1.5rem 1.5rem;
+  overflow: hidden;
+}
+
+.weather-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.weather-icon-large {
+  font-size: 2rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+
+.weather-temp-big {
+  font-family: var(--font-serif);
+  font-size: clamp(2.75rem, 9vw, 3.5rem);
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.weather-condition-name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: #eaf2fb;
+  margin-top: 0.5rem;
+}
+
+.weather-hilo {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: rgba(220,235,255,0.7);
+  margin-top: 0.35rem;
+}
+
+.weather-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.weather-detail {
+  text-align: left;
+}
+.weather-detail .wd-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(220,235,255,0.6);
+}
+.weather-detail .wd-val {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: #ffffff;
+  margin-top: 0.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== MOON SECTION ===== */
+.moon-block {
+  margin-top: 1.75rem;
+  display: grid;
+  gap: 1.5rem;
+  align-items: center;
+}
+@media (min-width: 640px) {
+  .moon-block { grid-template-columns: auto 1fr; gap: 2.5rem; }
+}
+
+.moon-svg-large {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 0 28px rgba(244,228,188,0.28));
+}
+
+.moon-data-table {
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+.mdt-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.mdt-row:last-child { border-bottom: none; }
+.mdt-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-soft);
+}
+.mdt-value {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ===== SONG CARD ENHANCED ===== */
+.song-card-enhanced {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(227,173,75,0.05), rgba(29,23,19,0.5));
+}
+
+.song-cover {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2a2218, #3a2f1e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(227,173,75,0.18);
+}
+.song-cover-glyph {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  color: rgba(227,173,75,0.4);
+}
+.song-play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background: var(--gold);
+  border: none;
+  color: var(--primary-foreground);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.song-play:hover { transform: scale(1.1); box-shadow: 0 4px 24px rgba(227,173,75,0.4); }
+
+.song-chart-label {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+}
+.song-title-enhanced {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  color: var(--foreground);
+  margin-top: 0.25rem;
+  line-height: 1.2;
+}
+.song-artist-enhanced {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.song-week {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--ink-soft);
+  margin-top: 0.35rem;
+  letter-spacing: 0.05em;
+}
+
+.streaming-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+.stream-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid var(--input);
+  background: rgba(255,255,255,0.03);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.stream-btn:hover {
+  border-color: rgba(227,173,75,0.4);
+  background: rgba(227,173,75,0.06);
+  color: var(--gold);
+}
+
+.song-fineprint {
+  grid-column: 1 / -1;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  opacity: 0.7;
+  margin-top: 0.5rem;
+}
+
+/* ===== RECEIPT / PRICE TABLE ===== */
+.receipt-table {
+  margin-top: 1.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: rgba(29,23,19,0.4);
+  overflow: hidden;
+}
+.receipt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.receipt-row:last-child { border-bottom: none; }
+.receipt-item {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  color: var(--foreground);
+}
+.receipt-prices { text-align: right; }
+.receipt-then {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.receipt-now {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+
+/* ===== HEADLINES (enhanced) ===== */
+.headlines-list {
+  margin-top: 1.75rem;
+  text-align: center;
+}
+.headline-item {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  line-height: 1.4;
+  color: var(--foreground);
+  margin: 0.85rem 0;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== FINAL CTA ===== */
+.final-cta {
+  text-align: center;
+  margin: 3rem 0 2rem;
+}
