@@ -73,10 +73,10 @@
         <span class="form-label">Your birthplace</span>
         <input type="text" class="form-input" id="inputCity" placeholder="City, Country" oninput="updateCertPreview()" list="cityList">
         <datalist id="cityList">
-          <option value="New York, USA"><option value="London, UK"><option value="Tokyo, Japan">
-          <option value="Jakarta, Indonesia"><option value="Paris, France"><option value="Berlin, Germany">
-          <option value="Houston, USA"><option value="Sydney, Australia"><option value="Mumbai, India">
-          <option value="São Paulo, Brazil"><option value="Cairo, Egypt"><option value="Seoul, South Korea">
+          <option value="Jakarta, Indonesia"><option value="Surabaya, Indonesia"><option value="Bandung, Indonesia">
+          <option value="Medan, Indonesia"><option value="Semarang, Indonesia"><option value="Makassar, Indonesia">
+          <option value="Palembang, Indonesia"><option value="Denpasar, Indonesia"><option value="Yogyakarta, Indonesia">
+          <option value="Balikpapan, Indonesia"><option value="Manado, Indonesia"><option value="Aceh, Indonesia">
         </datalist>
       </div>
 
@@ -128,7 +128,7 @@
     <!-- Feature text -->
     <p style="text-align:center;margin:2rem auto;max-width:28rem;font-size:0.9375rem;color:var(--ink-soft)">
       The weather, the headlines, the #1 song —<br>
-      <span style="color:var(--foreground)">reconstructed from real archives</span>
+      <span style="color:var(--foreground)">direkonstruksi dari data sejarah Indonesia</span>
     </p>
 
     <!-- Explore section -->
@@ -136,23 +136,23 @@
       <h2 class="explore-title">Curious? Explore a day first.</h2>
       <p class="hero-eyebrow" style="margin-top:0.5rem">Three days to discover</p>
       <div class="explore-grid">
-        <a class="explore-card" onclick="exploreDay(1969,7,20,'Houston, USA');return false;" href="#">
+        <a class="explore-card" onclick="exploreDay(1945,8,17,'Jakarta, Indonesia');return false;" href="#">
           <span class="explore-num">01</span>
-          <span class="explore-card-title">Apollo 11 lands on the Moon</span>
-          <span class="explore-card-meta">Houston, USA · 1969-07-20</span>
-          <span class="explore-card-visit">Visit →</span>
+          <span class="explore-card-title">Proklamasi Kemerdekaan</span>
+          <span class="explore-card-meta">Jakarta, ID · 1945-08-17</span>
+          <span class="explore-card-visit">Kunjungi →</span>
         </a>
-        <a class="explore-card" onclick="exploreDay(1989,11,9,'Berlin, Germany');return false;" href="#">
+        <a class="explore-card" onclick="exploreDay(1998,5,21,'Jakarta, Indonesia');return false;" href="#">
           <span class="explore-num">02</span>
-          <span class="explore-card-title">The Wall falls</span>
-          <span class="explore-card-meta">Berlin, DE · 1989-11-09</span>
-          <span class="explore-card-visit">Visit →</span>
+          <span class="explore-card-title">Reformasi dimulai</span>
+          <span class="explore-card-meta">Jakarta, ID · 1998-05-21</span>
+          <span class="explore-card-visit">Kunjungi →</span>
         </a>
-        <a class="explore-card" onclick="exploreDay(2000,1,1,'New York, USA');return false;" href="#">
+        <a class="explore-card" onclick="exploreDay(2000,1,1,'Jakarta, Indonesia');return false;" href="#">
           <span class="explore-num">03</span>
-          <span class="explore-card-title">The new millennium</span>
-          <span class="explore-card-meta">New York, USA · 2000-01-01</span>
-          <span class="explore-card-visit">Visit →</span>
+          <span class="explore-card-title">Milenium baru</span>
+          <span class="explore-card-meta">Jakarta, ID · 2000-01-01</span>
+          <span class="explore-card-visit">Kunjungi →</span>
         </a>
       </div>
     </div>
@@ -490,14 +490,14 @@ function renderStep() {
       html = `
         <button class="nav-back" onclick="prevStep()">‹ Back</button>
         <h2 class="story-h2">Imagine shopping in the year you were born.</h2>
-        <p class="story-body">What three things would you put in your basket?<br>Your basket · ${d.year} · US prices · then and now</p>
+        <p class="story-body">What three things would you put in your basket?<br>Your basket · ${d.year} · harga Indonesia · dulu vs sekarang</p>
         <div class="price-list">
           ${d.prices.map(p => `
             <div class="price-row">
               <span class="price-item">${p.name}</span>
               <div style="text-align:right">
-                <div class="price-then">$${formatPrice(p.then)}</div>
-                <div class="price-now">now $${formatPrice(p.now)}</div>
+                <div class="price-then">Rp${formatPrice(p.then)}</div>
+                <div class="price-now">sekarang Rp${formatPrice(p.now)}</div>
               </div>
             </div>`).join('')}
         </div>
@@ -563,7 +563,7 @@ function renderStep() {
 
         <!-- #1 Song -->
         <div class="song-card">
-          <div class="cert-eyebrow" style="margin-bottom:0.5rem">🎵 &nbsp;The #1 Song &nbsp;🎵</div>
+          <div class="cert-eyebrow" style="margin-bottom:0.5rem">🎵 &nbsp;Lagu Hits &nbsp;🎵</div>
           <div class="song-title">${d.song.title}</div>
           <div class="song-artist">${d.song.artist}</div>
         </div>
@@ -594,20 +594,20 @@ function renderStep() {
 
         <!-- Headlines -->
         <div style="margin:1.5rem 0;text-align:center">
-          <div class="cert-eyebrow" style="margin-bottom:0.75rem">📰 &nbsp;The Headlines &nbsp;·&nbsp; ${d.year}</div>
+          <div class="cert-eyebrow" style="margin-bottom:0.75rem">📰 &nbsp;Berita Headline &nbsp;·&nbsp; ${d.year}</div>
           ${d.headlines.map(h => `<p style="font-family:var(--font-serif);font-size:1.125rem;color:var(--foreground);margin:0.5rem 0">${h}</p>`).join('')}
         </div>
 
         <!-- Prices -->
         <div style="margin:1.5rem 0">
-          <div class="cert-eyebrow" style="text-align:center;margin-bottom:0.75rem">💲 &nbsp;Prices Then & Now &nbsp;·&nbsp; ${d.year}</div>
+          <div class="cert-eyebrow" style="text-align:center;margin-bottom:0.75rem">💲 &nbsp;Harga Dulu vs Sekarang &nbsp;·&nbsp; ${d.year}</div>
           <div class="price-list">
             ${d.prices.map(p => `
               <div class="price-row">
                 <span class="price-item">${p.name}</span>
                 <div style="text-align:right">
-                  <div class="price-then">$${formatPrice(p.then)}</div>
-                  <div class="price-now">now $${formatPrice(p.now)}</div>
+                  <div class="price-then">Rp${formatPrice(p.then)}</div>
+                  <div class="price-now">sekarang Rp${formatPrice(p.now)}</div>
                 </div>
               </div>`).join('')}
           </div>
@@ -615,7 +615,7 @@ function renderStep() {
 
         <!-- Earth -->
         <div style="text-align:center;margin:1.5rem 0">
-          <div class="cert-eyebrow" style="margin-bottom:0.75rem">🌍 &nbsp;The Earth Below &nbsp;·&nbsp; NASA Blue Marble</div>
+          <div class="cert-eyebrow" style="margin-bottom:0.75rem">🌍 &nbsp;Bumi di Hari Itu &nbsp;·&nbsp; NASA Blue Marble</div>
           <img class="earth-img" src="assets/earth-day-1024.webp" alt="Earth as seen from space" onerror="this.style.display='none'">
         </div>
 
