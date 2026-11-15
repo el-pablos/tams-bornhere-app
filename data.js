@@ -258,8 +258,40 @@ function buildStoryData(name, year, month, day, city, birthTime) {
     song,
     weather,
     headlines,
-    year
+    year,
+    heartbeats: Math.floor(days * 24 * 60 * 60 * 72),
+    sunrise: getSunrise(month, day),
+    sunset: getSunset(month, day),
+    precipitation: getPrecipitation(weather.condition),
+    wind: getWind(birthDate)
   };
+}
+
+// ===== SUNRISE/SUNSET (approximation for equatorial regions) =====
+function getSunrise(month, day) {
+  // Approximate sunrise for Indonesia (near equator): ~5:30-6:00 AM
+  const offset = Math.sin((month - 3) * Math.PI / 6) * 30;
+  const minutes = 5 * 60 + 38 + Math.round(offset);
+  return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+}
+
+function getSunset(month, day) {
+  const offset = Math.sin((month - 3) * Math.PI / 6) * 30;
+  const minutes = 17 * 60 + 47 + Math.round(offset);
+  return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+}
+
+// ===== PRECIPITATION based on weather condition =====
+function getPrecipitation(condition) {
+  if (condition.includes('Hujan') || condition.includes('badai')) return (5 + (condition.length % 10)).toFixed(1);
+  if (condition.includes('Mendung') || condition.includes('berawan')) return (0.5 + (condition.length % 3)).toFixed(1);
+  return '0.0';
+}
+
+// ===== WIND SPEED (deterministic from date) =====
+function getWind(date) {
+  const seed = date.getDate() + date.getMonth() * 31 + date.getFullYear();
+  return 5 + (seed * 7 % 18);
 }
 
 // Export for use
