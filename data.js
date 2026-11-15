@@ -103,21 +103,18 @@ function getDayOfWeek(date) {
   return DAYS[date.getDay()];
 }
 
-// ===== HISTORICAL PRICES (mock data by decade) =====
-// Based on real historical economic data (BLS consumer price index)
+// ===== HISTORICAL PRICES (IDR — data berdasarkan inflasi Indonesia) =====
+// Sumber: BPS, Bank Indonesia, kaspaspace.com, metrotvnews.com
 const PRICE_DATA = {
-  1940: { bread: 0.08, milk: 0.13, gas: 0.18, eggs: 0.13, house: 3920, car: 850, stamp: 0.03, coffee: 0.19 },
-  1950: { bread: 0.14, milk: 0.22, gas: 0.27, eggs: 0.22, house: 8450, car: 2100, stamp: 0.03, coffee: 0.25 },
-  1960: { bread: 0.20, milk: 0.31, gas: 0.31, eggs: 0.30, house: 12600, car: 2600, stamp: 0.04, coffee: 0.35 },
-  1970: { bread: 0.25, milk: 0.36, gas: 0.36, eggs: 0.35, house: 17900, car: 3500, stamp: 0.06, coffee: 0.45 },
-  1980: { bread: 0.50, milk: 0.62, gas: 0.86, eggs: 0.62, house: 47200, car: 7500, stamp: 0.15, coffee: 0.85 },
-  1990: { bread: 0.70, milk: 1.05, gas: 1.16, eggs: 0.85, house: 95800, car: 16000, stamp: 0.25, coffee: 1.50 },
-  2000: { bread: 0.92, milk: 1.35, gas: 1.30, eggs: 0.95, house: 119600, car: 21000, stamp: 0.33, coffee: 2.00 },
-  2010: { bread: 1.35, milk: 1.80, gas: 2.79, eggs: 1.65, house: 221800, car: 28400, stamp: 0.44, coffee: 2.80 },
-  2020: { bread: 1.70, milk: 2.20, gas: 2.17, eggs: 1.85, house: 329000, car: 36000, stamp: 0.55, coffee: 4.50 }
+  1970: { rice: 250, noodle: 25, gas: 75, eggs: 150, house: 2500000, motor: 145000, stamp: 15, coffee: 100 },
+  1980: { rice: 400, noodle: 60, gas: 160, eggs: 350, house: 8000000, motor: 400000, stamp: 50, coffee: 250 },
+  1990: { rice: 1000, noodle: 150, gas: 350, eggs: 900, house: 25000000, motor: 1500000, stamp: 150, coffee: 500 },
+  2000: { rice: 3500, noodle: 500, gas: 1150, eggs: 4000, house: 80000000, motor: 8000000, stamp: 400, coffee: 2000 },
+  2010: { rice: 10000, noodle: 1500, gas: 6000, eggs: 12000, house: 200000000, motor: 12000000, stamp: 600, coffee: 5000 },
+  2020: { rice: 15000, noodle: 2500, gas: 6500, eggs: 18000, house: 350000000, motor: 16000000, stamp: 800, coffee: 8000 }
 };
 
-const CURRENT_PRICES = { bread: 2.50, milk: 3.80, gas: 3.50, eggs: 3.20, house: 420000, car: 48000, stamp: 0.73, coffee: 5.50 };
+const CURRENT_PRICES = { rice: 25000, noodle: 3000, gas: 7500, eggs: 28000, house: 500000000, motor: 18000000, stamp: 1000, coffee: 12000 };
 
 function getPrices(year) {
   const decade = Math.floor(year / 10) * 10;
@@ -128,46 +125,40 @@ function getPrices(year) {
 function priceThenNow(year) {
   const then = getPrices(year);
   const items = [
-    { name: "Loaf of bread", then: then.bread, now: CURRENT_PRICES.bread },
-    { name: "Gallon of milk", then: then.milk, now: CURRENT_PRICES.milk },
-    { name: "Gallon of gas", then: then.gas, now: CURRENT_PRICES.gas },
-    { name: "Dozen eggs", then: then.eggs, now: CURRENT_PRICES.eggs },
-    { name: "New house", then: then.house, now: CURRENT_PRICES.house },
-    { name: "New car", then: then.car, now: CURRENT_PRICES.car },
-    { name: "Postage stamp", then: then.stamp, now: CURRENT_PRICES.stamp },
-    { name: "Pound of coffee", then: then.coffee, now: CURRENT_PRICES.coffee }
+    { name: "Beras 1 kg", then: then.rice, now: CURRENT_PRICES.rice },
+    { name: "Mi instan", then: then.noodle, now: CURRENT_PRICES.noodle },
+    { name: "Bensin 1 liter", then: then.gas, now: CURRENT_PRICES.gas },
+    { name: "Telur 1 kg", then: then.eggs, now: CURRENT_PRICES.eggs },
+    { name: "Rumah tinggal", then: then.house, now: CURRENT_PRICES.house },
+    { name: "Sepeda motor", then: then.motor, now: CURRENT_PRICES.motor },
+    { name: "Ongkos angkot", then: then.stamp, now: CURRENT_PRICES.stamp },
+    { name: "Kopi sachet", then: then.coffee, now: CURRENT_PRICES.coffee }
   ];
   return items;
 }
 
 function formatPrice(v) {
-  if (v < 1) return v.toFixed(2);
-  if (v < 100) return v.toFixed(2);
-  return Math.round(v).toLocaleString('en-US');
+  if (v >= 1000000) return (v / 1000000).toFixed(1) + "jt";
+  if (v >= 1000) return Math.round(v / 1000) + "rb";
+  return Math.round(v).toString();
 }
 
-// ===== #1 SONGS (Billboard) — representative historical data =====
+// ===== LAGU HITS INDONESIA — per dekade =====
+// Sumber: chart radio Prambors, kompilasi musik Indonesia
 const SONGS = {
-  1940: { title: "I'll Never Smile Again", artist: "Tommy Dorsey" },
-  1945: { title: "Till the End of Time", artist: "Perry Como" },
-  1950: { title: "Goodnight, Irene", artist: "The Weavers" },
-  1955: { title: "Cherry Pink and Apple Blossom White", artist: "Perez Prado" },
-  1960: { title: "Theme from A Summer Place", artist: "Percy Faith" },
-  1965: { title: "Wooly Bully", artist: "Sam the Sham" },
-  1969: { title: "Sugar, Sugar", artist: "The Archies" },
-  1970: { title: "Bridge Over Troubled Water", artist: "Simon & Garfunkel" },
-  1975: { title: "Love Will Keep Us Together", artist: "Captain & Tennille" },
-  1980: { title: "Call Me", artist: "Blondie" },
-  1985: { title: "Careless Whisper", artist: "Wham!" },
-  1989: { title: "Look Away", artist: "Chicago" },
-  1990: { title: "Hold On", artist: "Wilson Phillips" },
-  1995: { title: "Gangsta's Paradise", artist: "Coolio" },
-  2000: { title: "Breathe", artist: "Faith Hill" },
-  2005: { title: "We Belong Together", artist: "Mariah Carey" },
-  2010: { title: "TiK ToK", artist: "Kesha" },
-  2015: { title: "Uptown Funk", artist: "Mark Ronson ft. Bruno Mars" },
-  2020: { title: "Blinding Lights", artist: "The Weeknd" },
-  2025: { title: "Die With A Smile", artist: "Lady Gaga & Bruno Mars" }
+  1970: { title: "Lilin-Lilin Kecil", artist: "Chrisye" },
+  1975: { title: "Bujangan", artist: "Koes Plus" },
+  1980: { title: "Sakura", artist: "Fariz RM" },
+  1985: { title: "Jarum Neraka", artist: "Nicky Astria" },
+  1989: { title: "Badai Pasti Berlalu", artist: "Chrisye" },
+  1990: { title: "Pesawat Tempurku", artist: "Iwan Fals" },
+  1995: { title: "Bintang Kehidupan", artist: "Nike Ardilla" },
+  2000: { title: "Teman Tapi Mesra", artist: "Ratu" },
+  2005: { title: "Ya Sudahlah", artist: "Bondan Prakoso & Fade2Black" },
+  2010: { title: "Lebih Indah", artist: "Adera" },
+  2015: { title: "Diam-Diam Suka", artist: "Cherrybelle" },
+  2020: { title: "Manusia Kuat", artist: "Tulus" },
+  2025: { title: "Teh Hijau", artist: "Tulus" }
 };
 
 function getSong(year) {
@@ -181,10 +172,10 @@ function getSong(year) {
 
 // ===== WEATHER (mock seasonal by month & region) =====
 const WEATHER_CONDITIONS = {
-  winter: ["Clear and cold", "Light snow", "Overcast", "Frosty morning"],
-  spring: ["Mild and breezy", "Partly cloudy", "Spring showers", "Warm sunshine"],
-  summer: ["Hot and sunny", "Humid", "Thunderstorm", "Clear skies"],
-  fall: ["Crisp and cool", "Foggy", "Overcast", "Golden afternoon"]
+  winter: ["Cerah dan sejuk", "Hujan ringan", "Mendung", "Dingin pagi"],
+  spring: ["Hangat dan berangin", "Berawan sebagian", "Hujan musim", "Cerah ceria"],
+  summer: ["Panas terik", "Lembab", "Hujan badai", "Langit cerah"],
+  fall: ["Sejuk dan nyaman", "Berkabut", "Mendung", "Sore keemasan"]
 };
 
 function getMockWeather(date, city) {
@@ -203,34 +194,25 @@ function getMockWeather(date, city) {
   return {
     temp: Math.round(temp),
     condition: condition,
-    city: city || "your birthplace",
+    city: city || "tempat lahir kamu",
     high: Math.round(temp + 5),
     low: Math.round(temp - 5)
   };
 }
 
-// ===== HEADLINES (mock historical events) =====
+// ===== HEADLINE SEJARAH INDONESIA — per dekade =====
+// Sumber: Wikipedia, metrotvnews.com, garis waktu sejarah Indonesia
 const HEADLINES = {
-  1940: ["Winston Churchill becomes UK Prime Minister", "Battle of Britain rages in the skies"],
-  1945: ["World War II ends as Japan surrenders", "United Nations founded"],
-  1950: ["Korean War begins", "First credit card introduced (Diners Club)"],
-  1955: ["Rosa Parks sparks Montgomery Bus Boycott", "Disneyland opens in California"],
-  1960: ["John F. Kennedy elected President", "First weather satellite launched"],
-  1965: ["US troops sent to Vietnam", "Martin Luther King Jr. leads Selma march"],
-  1969: ["Apollo 11 lands on the Moon", "Woodstock festival draws 400,000"],
-  1970: ["Beatles announce breakup", "First Earth Day celebrated"],
-  1975: ["Vietnam War ends", "Microsoft founded by Bill Gates"],
-  1980: ["Mount St. Helens erupts", "John Lennon assassinated"],
-  1985: ["Live Aid concert raises millions for famine relief", "Nintendo releases NES"],
-  1989: ["Berlin Wall falls", "World Wide Web invented by Tim Berners-Lee"],
-  1990: ["Nelson Mandela freed from prison", "Hubble Space Telescope launched"],
-  1995: ["DVD format announced", "eBay founded"],
-  2000: ["Y2K passes without major disruption", "Human genome draft completed"],
-  2005: ["Hurricane Katrina devastates New Orleans", "YouTube founded"],
-  2010: ["iPad launched by Apple", "Instagram released"],
-  2015: ["Paris Climate Agreement signed", "Same-sex marriage legalized in US"],
-  2020: ["COVID-19 global pandemic", "SpaceX launches first crewed mission"],
-  2025: ["AI transforms daily life", "Mars sample return mission planned"]
+  1945: ["Proklamasi Kemerdekaan Indonesia 17 Agustus 1945", "Pertempuran Surabaya 10 November 1945"],
+  1950: ["Pengakuan kedaulatan RI oleh Belanda", "Konferensi Asia-Afrika di Bandung 1955"],
+  1960: ["Dekrit Presiden 5 Juli 1959", "G30S dan awal Orde Baru 1965"],
+  1970: ["Soekarno meninggal dunia 21 Juni 1970", "Boom minyak dunia mengubah perekonomian RI"],
+  1980: ["Swasembada beras tercapai", "Deregulasi perbankan dan reformasi pajak 1983"],
+  1990: ["Krisis Finansial Asia 1997", "Soeharto mundur 21 Mei 1998, era Reformasi dimulai"],
+  2000: ["Tsunami Aceh 26 Desember 2004", "Pemilu presiden langsung pertama 2004 — SBY terpilih"],
+  2010: ["Joko Widodo terpilih presiden 2014", "Asian Games 2018 di Jakarta-Palembang"],
+  2020: ["Pandemi COVID-19 melanda Indonesia", "Ekonomi terkontraksi -2,07% lalu rebound 2021"],
+  2025: ["Danantara resmi berdiri sebagai dana kekayaan negara", "Program makan gratis untuk pelajar diluncurkan"]
 };
 
 function getHeadlines(year) {
