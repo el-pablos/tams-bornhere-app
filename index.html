@@ -210,6 +210,7 @@ let storyStep = 0;
 let storyData = null;
 let formData = { name: '', year: 0, month: 0, day: 0, city: '', birthTime: null };
 const TOTAL_STEPS = 10;
+let ageCounterInterval = null;
 
 // ===== STARFIELD CANVAS =====
 const canvas = document.getElementById('starCanvas');
@@ -390,6 +391,7 @@ function updateStoryHeader() {
 // ===== RENDER STORY STEP =====
 function renderStep() {
   const content = document.getElementById('storyContent');
+  stopAgeCounter();
   content.innerHTML = '';
   content.classList.add('fade-enter');
 
@@ -531,102 +533,156 @@ function renderStep() {
     case 9: // Final — certificate reveal
       html = `
         <button class="nav-back" onclick="prevStep()">‹ Back</button>
-        <h2 class="story-h2">Your day, brought back to life.</h2>
-        <p class="story-body">Here's everything we found — all reconstructed locally, nothing sent anywhere.</p>
 
-        <!-- Certificate -->
-        <div class="cert-preview" style="border:1px solid var(--border);border-radius:var(--radius);background:rgba(29,23,19,0.6);margin-top:1.5rem">
-          <div class="cert-eyebrow">★ &nbsp;A Certificate of Arrival &nbsp;★</div>
-          <div class="cert-name" style="color:var(--foreground)">${d.name}</div>
-          <div class="cert-row"><div class="cert-label">Born on</div><span class="cert-value">${d.dateStr}</span></div>
-          <div class="cert-row"><div class="cert-label">In the city of</div><span class="cert-value">${d.city}</span></div>
-          <div class="cert-row"><div class="cert-label">The moon overhead</div><span class="cert-value">${d.moon.name} · ${d.moon.illum}% illuminated ${d.moon.emoji}</span></div>
-          <div class="cert-seal">★</div>
-          <div class="cert-brand">tams · bornhere</div>
-        </div>
-
-        <!-- Moon -->
-        <div class="moon-display">
-          <div style="font-size:4rem">${d.moon.emoji}</div>
-          <div class="moon-label">${d.moon.name}</div>
-          <div class="data-card-sub">${d.moon.illum}% illuminated · ${d.dateStr}</div>
-        </div>
-
-        <!-- Weather -->
-        <div class="weather-card">
-          <div class="weather-temp">${d.weather.temp}°</div>
-          <div class="weather-info">
-            <div class="weather-condition">${d.weather.condition}</div>
-            <div class="weather-city">High ${d.weather.high}° / Low ${d.weather.low}° · ${d.weather.city}</div>
+        <!-- 1. CERTIFICATE -->
+        <section class="capsule-section">
+          <p class="section-label">★ A Certificate of Arrival ★</p>
+          <div class="cert-preview" style="border:1px solid var(--border);border-radius:var(--radius);background:rgba(29,23,19,0.6);margin-top:0.5rem">
+            <div class="cert-name" style="color:var(--foreground)">${d.name}</div>
+            <div class="cert-row"><div class="cert-label">Born on</div><span class="cert-value">${d.dateStr}</span></div>
+            <div class="cert-row"><div class="cert-label">In the city of</div><span class="cert-value">${d.city}</span></div>
+            <div class="cert-row"><div class="cert-label">The moon overhead</div><span class="cert-value">${d.moon.name} · ${d.moon.illum}% illuminated</span></div>
+            <div class="cert-row"><div class="cert-label">Zodiac</div><span class="cert-value">${d.zodiac.symbol} ${d.zodiac.sign} · ${d.chinese.symbol} ${d.chinese.animal}</span></div>
+            <div class="cert-row"><div class="cert-label">Birthstone &amp; flower</div><span class="cert-value">${d.birthstone} · ${d.birthFlower}</span></div>
+            <div class="cert-seal">★</div>
+            <div class="cert-brand">tams · bornhere</div>
           </div>
-        </div>
+        </section>
 
-        <!-- #1 Song -->
-        <div class="song-card">
-          <div class="cert-eyebrow" style="margin-bottom:0.5rem">🎵 &nbsp;Lagu Hits &nbsp;🎵</div>
-          <div class="song-title">${d.song.title}</div>
-          <div class="song-artist">${d.song.artist}</div>
-        </div>
+        <!-- 2. YOUR LIFE · IN NUMBERS -->
+        <section class="capsule-section">
+          <p class="section-label">Your Life · In Numbers</p>
+          <h3 class="section-headline">You've been here for <span class="num-gold">${d.daysOnEarth.toLocaleString()}</span> days.</h3>
+          <span class="age-counter" id="ageCounter">—</span>
+          <div class="life-numbers">
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <span class="stat-label">Full Moons Since You Arrived</span>
+                <span class="stat-icon">🌙</span>
+              </div>
+              <div class="stat-value">${d.fullMoons}</div>
+              <div class="stat-caption">So far</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <span class="stat-label">Days Alive</span>
+                <span class="stat-icon">✦</span>
+              </div>
+              <div class="stat-value">${d.daysOnEarth.toLocaleString()}</div>
+              <div class="stat-caption">And counting</div>
+            </div>
+            <div class="stat-card highlight">
+              <div class="stat-card-top">
+                <span class="stat-label">Heartbeats</span>
+                <span class="stat-icon">♡</span>
+              </div>
+              <div class="stat-value heartbeats-count">${d.heartbeats.toLocaleString()}</div>
+              <div class="stat-caption">Approx. at 72 bpm</div>
+            </div>
+          </div>
+          <p class="section-footnote">Based on your birth details. Heartbeats are estimated.</p>
+        </section>
 
-        <!-- Zodiac & Astrology -->
-        <div class="zodiac-grid">
-          <div class="zodiac-card">
-            <div class="zodiac-symbol">${d.zodiac.symbol}</div>
-            <div class="zodiac-label">Zodiac Sign</div>
-            <div class="zodiac-value">${d.zodiac.sign}</div>
+        <!-- 3. THE AIR AROUND YOU -->
+        <section class="capsule-section">
+          <p class="section-label">The Air Around You</p>
+          <h3 class="section-headline">What the weather was like.</h3>
+          <div class="weather-card-blue">
+            <div class="weather-top">
+              <div>
+                <div class="weather-icon-large">${weatherIcon(d.weather.condition)}</div>
+                <div class="weather-condition-name">${weatherConditionEn(d.weather.condition)}</div>
+                <div class="weather-hilo">High ${d.weather.high}° / Low ${d.weather.low}° · ${d.weather.city}</div>
+              </div>
+              <div class="weather-temp-big">${d.weather.temp}°C</div>
+            </div>
+            <div class="weather-details">
+              <div class="weather-detail"><span class="wd-label">Precipitation</span><span class="wd-val">${d.precipitation} mm</span></div>
+              <div class="weather-detail"><span class="wd-label">Wind</span><span class="wd-val">${d.wind} km/h</span></div>
+              <div class="weather-detail"><span class="wd-label">Conditions</span><span class="wd-val">${weatherConditionEn(d.weather.condition)}</span></div>
+            </div>
           </div>
-          <div class="zodiac-card">
-            <div class="zodiac-symbol">${d.chinese.symbol}</div>
-            <div class="zodiac-label">Chinese Zodiac</div>
-            <div class="zodiac-value">${d.chinese.animal}</div>
-          </div>
-          <div class="zodiac-card">
-            <div class="zodiac-symbol">💎</div>
-            <div class="zodiac-label">Birthstone</div>
-            <div class="zodiac-value">${d.birthstone}</div>
-          </div>
-          <div class="zodiac-card">
-            <div class="zodiac-symbol">🌸</div>
-            <div class="zodiac-label">Birth Flower</div>
-            <div class="zodiac-value">${d.birthFlower}</div>
-          </div>
-        </div>
+        </section>
 
-        <!-- Headlines -->
-        <div style="margin:1.5rem 0;text-align:center">
-          <div class="cert-eyebrow" style="margin-bottom:0.75rem">📰 &nbsp;Berita Headline &nbsp;·&nbsp; ${d.year}</div>
-          ${d.headlines.map(h => `<p style="font-family:var(--font-serif);font-size:1.125rem;color:var(--foreground);margin:0.5rem 0">${h}</p>`).join('')}
-        </div>
+        <!-- 4. THE SKY ABOVE YOU -->
+        <section class="capsule-section">
+          <p class="section-label">The Sky Above You</p>
+          <h3 class="section-headline">The Moon was a ${d.moon.name.toLowerCase()} when ${d.name} arrived.</h3>
+          <div class="moon-block">
+            <div>${moonPhaseSVG(d.moon.phase, d.moon.illum)}</div>
+            <div class="moon-data-table">
+              <div class="mdt-row"><span class="mdt-label">Day</span><span class="mdt-value">${d.dayOfWeek}</span></div>
+              <div class="mdt-row"><span class="mdt-label">Phase</span><span class="mdt-value">${d.moon.name}</span></div>
+              <div class="mdt-row"><span class="mdt-label">Illumination</span><span class="mdt-value">${d.moon.illum}%</span></div>
+              <div class="mdt-row"><span class="mdt-label">Sunrise</span><span class="mdt-value">${d.sunrise}</span></div>
+              <div class="mdt-row"><span class="mdt-label">Sunset</span><span class="mdt-value">${d.sunset}</span></div>
+            </div>
+          </div>
+        </section>
 
-        <!-- Prices -->
-        <div style="margin:1.5rem 0">
-          <div class="cert-eyebrow" style="text-align:center;margin-bottom:0.75rem">💲 &nbsp;Harga Dulu vs Sekarang &nbsp;·&nbsp; ${d.year}</div>
-          <div class="price-list">
+        <!-- 5. THE SOUNDTRACK -->
+        <section class="capsule-section">
+          <p class="section-label">The Soundtrack</p>
+          <h3 class="section-headline">The biggest song on the radio.</h3>
+          <div class="song-card-enhanced">
+            <div class="song-cover">
+              <span class="song-cover-glyph">♪</span>
+              <button class="song-play" onclick="window.open('https://www.youtube.com/results?search_query=${encodeURIComponent(d.song.title + ' ' + d.song.artist)}','_blank')" aria-label="Play song preview">▶</button>
+            </div>
+            <div class="song-meta">
+              <div class="song-chart-label">The #1 Song · ${d.year}</div>
+              <div class="song-title-enhanced">${d.song.title}</div>
+              <div class="song-artist-enhanced">${d.song.artist}</div>
+              <div class="song-week">Week of ${d.year}</div>
+              <div class="streaming-links">
+                <a class="stream-btn" href="https://music.apple.com/search?term=${encodeURIComponent(d.song.title + ' ' + d.song.artist)}" target="_blank" rel="noopener">Apple Music →</a>
+                <a class="stream-btn" href="https://open.spotify.com/search/${encodeURIComponent(d.song.title + ' ' + d.song.artist)}" target="_blank" rel="noopener">Spotify →</a>
+                <a class="stream-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(d.song.title + ' ' + d.song.artist)}" target="_blank" rel="noopener">YouTube →</a>
+              </div>
+            </div>
+            <p class="song-fineprint">A 30-second listen, on us · courtesy of streaming partners</p>
+          </div>
+        </section>
+
+        <!-- 6. THE RECEIPT -->
+        <section class="capsule-section">
+          <p class="section-label">The Receipt</p>
+          <h3 class="section-headline">What things cost back then.</h3>
+          <div class="receipt-table">
             ${d.prices.map(p => `
-              <div class="price-row">
-                <span class="price-item">${p.name}</span>
-                <div style="text-align:right">
-                  <div class="price-then">Rp${formatPrice(p.then)}</div>
-                  <div class="price-now">sekarang Rp${formatPrice(p.now)}</div>
+              <div class="receipt-row">
+                <span class="receipt-item">${p.name}</span>
+                <div class="receipt-prices">
+                  <div class="receipt-then">Rp${formatPrice(p.then)}</div>
+                  <div class="receipt-now">now Rp${formatPrice(p.now)}</div>
                 </div>
               </div>`).join('')}
           </div>
-        </div>
+        </section>
 
-        <!-- Earth -->
-        <div style="text-align:center;margin:1.5rem 0">
-          <div class="cert-eyebrow" style="margin-bottom:0.75rem">🌍 &nbsp;Bumi di Hari Itu &nbsp;·&nbsp; NASA Blue Marble</div>
+        <!-- 7. THE HEADLINES -->
+        <section class="capsule-section">
+          <p class="section-label">The Headlines · ${d.year}</p>
+          <h3 class="section-headline">What the world was talking about.</h3>
+          <div class="headlines-list">
+            ${d.headlines.map(h => `<p class="headline-item">${h}</p>`).join('')}
+          </div>
+        </section>
+
+        <!-- 8. EARTH -->
+        <section class="capsule-section">
+          <p class="section-label">The Earth · The Day You Arrived</p>
           <img class="earth-img" src="assets/earth-day-1024.webp" alt="Earth as seen from space" onerror="this.style.display='none'">
-        </div>
+        </section>
 
         <!-- CTA -->
-        <div style="text-align:center;margin:2rem 0">
+        <div class="final-cta">
           <button class="btn-primary" style="max-width:20rem;margin:0 auto" onclick="goHome()">
             <span>Start another day</span><span>→</span>
           </button>
           <p class="form-disclaimer" style="margin-top:1rem">
             🔒 100% local. No data was sent to any server.<br>
-            Tams - BornHere App · 100% lokal, tanpa server, tanpa tracking.
+            Tams - BornHere App · reconstructed entirely on your device.
           </p>
         </div>`;
       break;
@@ -634,6 +690,93 @@ function renderStep() {
 
   content.innerHTML = html;
   window.scrollTo(0, 0);
+  if (storyStep === 9 && storyData) startAgeCounter(storyData.birthDate);
+}
+
+// ===== STEP 9 HELPERS: moon SVG, live age counter, weather labels =====
+function moonPhaseSVG(phase, illumPercent) {
+  const illum = Math.max(0, Math.min(1, illumPercent / 100));
+  const R = 70, cx = 90, cy = 90;
+  const rx = Math.max(0.001, R * Math.abs(1 - 2 * illum));
+  const waxing = phase <= 0.5; // lit limb on the right when waxing
+  const darkFill = '#2a2218';
+
+  let darkPath = '';
+  if (illum <= 0.001) {
+    // New moon — whole disk dark
+    darkPath = `M ${cx} ${cy-R} A ${R} ${R} 0 0 1 ${cx} ${cy+R} A ${R} ${R} 0 0 1 ${cx} ${cy-R} Z`;
+  } else if (illum < 0.999) {
+    const termSweep = (illum < 0.5) ? 1 : 0; // crescent bulges into lit side, gibbous into dark side
+    if (waxing) {
+      // dark on the left: left semicircle (sweep 0) + terminator back to top
+      darkPath = `M ${cx} ${cy-R} A ${R} ${R} 0 0 0 ${cx} ${cy+R} A ${rx} ${R} 0 0 ${termSweep} ${cx} ${cy-R} Z`;
+    } else {
+      // dark on the right: right semicircle (sweep 1) + terminator back to top
+      darkPath = `M ${cx} ${cy-R} A ${R} ${R} 0 0 1 ${cx} ${cy+R} A ${rx} ${R} 0 0 ${(1-termSweep)} ${cx} ${cy-R} Z`;
+    }
+  }
+
+  return `<svg class="moon-svg-large" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Moon phase illustration">
+    <defs>
+      <radialGradient id="moonLit" cx="40%" cy="38%" r="72%">
+        <stop offset="0%" stop-color="#fff7e0"/>
+        <stop offset="55%" stop-color="#f4e4bc"/>
+        <stop offset="100%" stop-color="#d9c79a"/>
+      </radialGradient>
+      <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="55%" stop-color="rgba(244,228,188,0.16)"/>
+        <stop offset="100%" stop-color="rgba(244,228,188,0)"/>
+      </radialGradient>
+    </defs>
+    <circle cx="${cx}" cy="${cy}" r="${R+16}" fill="url(#moonGlow)"/>
+    <circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#moonLit)" stroke="rgba(244,228,188,0.14)" stroke-width="1"/>
+    ${darkPath ? `<path d="${darkPath}" fill="${darkFill}" opacity="0.92"/>` : ''}
+  </svg>`;
+}
+
+function stopAgeCounter() {
+  if (ageCounterInterval) { clearInterval(ageCounterInterval); ageCounterInterval = null; }
+}
+
+function startAgeCounter(birthDate) {
+  stopAgeCounter();
+  const el = document.getElementById('ageCounter');
+  if (!el || !birthDate) return;
+  const tick = () => {
+    const now = new Date();
+    let years = now.getFullYear() - birthDate.getFullYear();
+    const m = now.getMonth(), dd = now.getDate();
+    const bm = birthDate.getMonth(), bd = birthDate.getDate();
+    const hadBirthday = (m > bm) || (m === bm && dd >= bd);
+    if (!hadBirthday) years--;
+    const lastBday = new Date(now.getFullYear() - (hadBirthday ? 0 : 1), bm, bd, birthDate.getHours() || 0, birthDate.getMinutes() || 0, birthDate.getSeconds() || 0);
+    const ms = now - lastBday;
+    const days = Math.floor(ms / 86400000);
+    const remSec = Math.floor((ms % 86400000) / 1000);
+    const hh = String(Math.floor(remSec / 3600)).padStart(2,'0');
+    const mm = String(Math.floor((remSec % 3600) / 60)).padStart(2,'0');
+    const ss = String(remSec % 60).padStart(2,'0');
+    el.textContent = `${years}y ${days}d ${hh}:${mm}:${ss}`;
+  };
+  tick();
+  ageCounterInterval = setInterval(tick, 1000);
+}
+
+function weatherConditionEn(cond) {
+  const map = {
+    'Cerah dan sejuk':'Clear & cool','Hujan ringan':'Light rain','Mendung':'Overcast','Dingin pagi':'Cold morning',
+    'Hangat dan berangin':'Warm & windy','Berawan sebagian':'Partly cloudy','Hujan musim':'Monsoon rain','Cerah ceria':'Bright & clear',
+    'Panas terik':'Scorching hot','Lembab':'Humid','Hujan badai':'Thunderstorm','Langit cerah':'Clear sky',
+    'Sejuk dan nyaman':'Cool & pleasant','Berkabut':'Foggy','Sore keemasan':'Golden evening'
+  };
+  return map[cond] || cond;
+}
+
+function weatherIcon(cond) {
+  if (cond.includes('Hujan') || cond.includes('badai')) return '🌧️';
+  if (cond.includes('Mendung') || cond.includes('berawan') || cond.includes('Berkabut')) return '☁️';
+  if (cond.includes('Lembab')) return '💧';
+  return '☀️';
 }
 
 // ===== NAVIGATION =====
