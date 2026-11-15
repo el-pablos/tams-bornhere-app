@@ -79,6 +79,13 @@ assertTruthy('Story: has song', !!story.song.title);
 assertTruthy('Story: has weather', !!story.weather.temp);
 assertTruthy('Story: has headlines', Array.isArray(story.headlines) && story.headlines.length > 0);
 
+// New data fields
+assertTruthy('Story: has heartbeats > 1B', story.heartbeats > 1000000000);
+assertTruthy('Story: has sunrise format', /^\d{2}:\d{2}$/.test(story.sunrise));
+assertTruthy('Story: has sunset format', /^\d{2}:\d{2}$/.test(story.sunset));
+assertTruthy('Story: has precipitation', story.precipitation !== undefined);
+assertTruthy('Story: has wind > 0', story.wind > 0);
+
 // Birthstone & Flower by month
 assert('Story: June birthstone = Pearl', story.birthstone, 'Pearl');
 assert('Story: June flower = Rose', story.birthFlower, 'Rose');
