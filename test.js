@@ -84,13 +84,13 @@ assert('Story: June birthstone = Pearl', story.birthstone, 'Pearl');
 assert('Story: June flower = Rose', story.birthFlower, 'Rose');
 
 // Song by year
-assert('Story: 1969 song = Sugar, Sugar', buildStoryData('Test', 1969, 7, 20, 'Houston', null).song.title, 'Sugar, Sugar');
-assert('Story: 2000 song = Breathe', buildStoryData('Test', 2000, 1, 1, 'NYC', null).song.title, 'Breathe');
+assert('Story: 1970 song = Lilin-Lilin Kecil', buildStoryData('Test', 1970, 7, 20, 'Jakarta', null).song.title, 'Lilin-Lilin Kecil');
+assert('Story: 2000 song = Teman Tapi Mesra', buildStoryData('Test', 2000, 1, 1, 'Jakarta', null).song.title, 'Teman Tapi Mesra');
 
 // Prices by decade
-const prices1970 = buildStoryData('Test', 1970, 1, 1, 'NYC', null).prices;
-assertTruthy('Prices: 1970 bread < $0.50', prices1970[0].then < 0.50);
-assertTruthy('Prices: 1970 gas < $0.50', prices1970[2].then < 0.50);
+const prices1970 = buildStoryData('Test', 1970, 1, 1, 'Jakarta', null).prices;
+assertTruthy('Prices: 1970 beras < 1000', prices1970[0].then < 1000);
+assertTruthy('Prices: 1970 bensin < 200', prices1970[2].then < 200);
 
 // Weather determinism (same date = same weather)
 const w1 = buildStoryData('A', 2003, 6, 15, 'Jakarta', null).weather;
@@ -111,9 +111,9 @@ const leap = buildStoryData('Leap', 2000, 2, 29, 'Paris', null);
 assertTruthy('Leap: Feb 29 2000 valid', leap.dayOfWeek !== undefined);
 
 // Early date
-const early = buildStoryData('Old', 1940, 1, 1, 'London', null);
-assertTruthy('Early: 1940 has song', !!early.song.title);
-assertTruthy('Early: 1940 has prices', early.prices.length === 8);
+const early = buildStoryData('Old', 1975, 1, 1, 'Surabaya', null);
+assertTruthy('Early: 1975 has song', !!early.song.title);
+assertTruthy('Early: 1975 has prices', early.prices.length === 8);
 
 // ===== SUMMARY =====
 console.log('\n========================================');
